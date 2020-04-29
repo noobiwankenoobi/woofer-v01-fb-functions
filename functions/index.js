@@ -16,3 +16,22 @@ exports.getWoofs = functions.https.onRequest((req, res) => {
     .catch((err) => console.error(err));
 });
 
+exports.createWoof = functions.https.onRequest((req, res) => {
+  const newWoof = {
+    body: req.body.body,
+    userHandle: req.body.userHandle,
+    createdAt: admin.firestore.Timestamp.fromDate(new Date())
+  };
+
+  admin.firestore()
+    .collection('woofs')
+    .add(newWoof)
+    .then((doc) => {
+      res.json({ message: `document ${doc.id} created successfully` });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: 'something went wrong' });
+      console.error(err);
+    })
+
+});
